@@ -2,7 +2,7 @@ package rest
 
 import (
 	"book-management/pkg/apis"
-	"book-management/pkg/book-cli/cmd/pkg/options"
+	"book-management/pkg/book-cli/pkg/options"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -16,6 +16,9 @@ func (s *BookServer) handleBookModifications(res http.ResponseWriter, req *http.
 	switch req.Method {
 	case options.Create.String():
 		s.CreateBook(res, req)
+		break
+	case options.Update.String():
+		s.UpdateBook(res, req)
 		break
 	}
 }
@@ -42,6 +45,33 @@ func (s *BookServer) CreateBook(res http.ResponseWriter, req *http.Request) {
 
 	if err != nil {
 		http.Error(res, apis.NewError(http.StatusInternalServerError, fmt.Errorf("error while creating book: %v", err)).JSON(), http.StatusInternalServerError)
+		return
+	}
+	res.Write([]byte(apis.NewSuccess(msg).JSON()))
+}
+
+// UpdateBook parses the request body and passes the object to the database driver
+func (s *BookServer) UpdateBook(res http.ResponseWriter, req *http.Request) {
+	reqBody, err := ioutil.ReadAll(req.Body)
+	defer req.Body.Close()
+
+	if err != nil {
+		http.Error(res, apis.NewError(http.StatusBadRequest, fmt.Errorf("error while reading request body: %v", err)).JSON(), http.StatusBadRequest)
+		return
+	}
+
+	book := &apis.Book{}
+	err = json.Unmarshal(reqBody, book)
+
+	if err != nil {
+		http.Error(res, apis.NewError(http.StatusBadRequest, fmt.Errorf("error while unmarshaling request body: %v", err)).JSON(), http.StatusBadRequest)
+		return
+	}
+
+	msg, err := s.db.UpdateBook(book)
+
+	if err != nil {
+		http.Error(res, apis.NewError(http.StatusInternalServerError, fmt.Errorf("error while updating book: %v", err)).JSON(), http.StatusInternalServerError)
 		return
 	}
 	res.Write([]byte(apis.NewSuccess(msg).JSON()))
