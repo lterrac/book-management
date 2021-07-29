@@ -13,3 +13,15 @@ func PreModifierFunction(cmd *cobra.Command, args []string) error {
 	}
 	return nil
 }
+
+// PreRetrieverFunction checks whether the resource identifier is passed as arg or at least one of the filtering args is supplied as flag
+func PreRetrieverFunction(cmd *cobra.Command, args []string) error {
+	if len(args) == 1 &&
+		cmd.Flag("author").Value.String() == "" &&
+		cmd.Flag("title").Value.String() == "" &&
+		cmd.Flag("dates").Value.String() == "" &&
+		cmd.Flag("genre").Value.String() == "" {
+		return fmt.Errorf("provide resource identifier or at least one valid filter")
+	}
+	return nil
+}

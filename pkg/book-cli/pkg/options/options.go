@@ -55,7 +55,7 @@ func NewModifierOptions(cmd *cobra.Command, op ResourceOperation, host string, a
 	return newCommandOptions(kind, op, obj, host, []string{}), nil
 }
 
-// NewModifierOptions forms the options for a retriever command
+// NewRetrieverOptions forms the options for a retriever command
 func NewRetrieverOptions(cmd *cobra.Command, op ResourceOperation, host string, args []string) (*CommandOptions, error) {
 	kind := apis.GetResource(args[0])
 
