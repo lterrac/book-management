@@ -86,12 +86,6 @@ func (s *MySQLHandler) GetBook(filters *apis.FilterChain) (books []apis.Book, er
 	prepare, query := filters.SQLStatement()
 	qs := fmt.Sprintf("SELECT * FROM books WHERE %s", prepare)
 
-	fmt.Println(qs)
-
-	for _, q := range query {
-		fmt.Printf("%v\n", q)
-	}
-
 	stmt, err := s.db.Prepare(qs)
 
 	if err != nil {

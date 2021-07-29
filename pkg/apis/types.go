@@ -75,7 +75,7 @@ func (j Date) MarshalJSON() ([]byte, error) {
 	return json.Marshal(time.Time(j).Format(dateLayout))
 }
 
-// Maybe a Format function for printing your date
+// String returns a string representation of the date according to the dateLayout format
 func (j Date) String() string {
 	t := time.Time(j)
 	return t.Format(dateLayout)

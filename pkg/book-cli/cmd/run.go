@@ -17,8 +17,6 @@ func RunCommand(opts *options.CommandOptions) error {
 		Timeout: 20 * time.Second,
 	}
 
-	url := opts.URL()
-	fmt.Println(url)
 	req, err := http.NewRequest(string(opts.Operation), opts.URL(), bytes.NewBuffer([]byte(opts.Object)))
 
 	if err != nil {
