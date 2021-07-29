@@ -47,6 +47,9 @@ func (s *BookServer) setupRESTSHandlers() {
 	subrouter.HandleFunc("/books", s.handleBookModifications).
 		Methods(http.MethodPost, http.MethodPut)
 
+	subrouter.NewRoute().Subrouter().Queries("filter", "{filter:[0-9|a-z|_|-]*}").
+		Methods(http.MethodDelete, http.MethodGet).
+		HandlerFunc(s.handleBookRetrieval)
 	s.server = http.Server{
 		Addr:    "127.0.0.1:8080",
 		Handler: router,

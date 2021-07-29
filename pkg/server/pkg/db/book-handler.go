@@ -13,6 +13,7 @@ import (
 type Handler interface {
 	CreateBook(book *apis.Book) (message string, err error)
 	UpdateBook(book *apis.Book) (message string, err error)
+	GetBook(filters *apis.FilterChain) (books []apis.Book, err error)
 }
 
 // MySQLHandler is the wrapper for the MySQL database
@@ -78,4 +79,45 @@ func (s *MySQLHandler) UpdateBook(book *apis.Book) (message string, err error) {
 	}
 
 	return fmt.Sprintf("Updated book %v written by %v with ISBN: %v", book.Title, book.Author, book.Isbn), nil
+}
+
+// GetBook returns one or more book from the database based on supplied filters
+func (s *MySQLHandler) GetBook(filters *apis.FilterChain) (books []apis.Book, err error) {
+	prepare, query := filters.SQLStatement()
+	qs := fmt.Sprintf("SELECT * FROM books WHERE %s", prepare)
+
+	fmt.Println(qs)
+
+	for _, q := range query {
+		fmt.Printf("%v\n", q)
+	}
+
+	stmt, err := s.db.Prepare(qs)
+
+	if err != nil {
+		fmt.Println(fmt.Errorf("prepare statement: %v", err))
+		return nil, fmt.Errorf("internal error")
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(query...)
+	if err != nil {
+		fmt.Println(fmt.Errorf("execute statement: %v", err))
+		return nil, fmt.Errorf("internal error")
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		book := apis.Book{}
+
+		err = rows.Scan(&book.Title, &book.Isbn, &book.Author, &book.PublishedDate, &book.Edition, &book.Description, &book.Genre)
+		if err != nil {
+			fmt.Println(fmt.Errorf("scan row: %v", err))
+			return nil, fmt.Errorf("internal error")
+		}
+
+		books = append(books, book)
+	}
+
+	return books, nil
 }
