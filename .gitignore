@@ -1,0 +1,5 @@
+.vscode/
+
+pkg/*/book-server
+pkg/*/book-cli
+pkg/*/*.out
