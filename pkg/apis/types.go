@@ -3,6 +3,8 @@ package apis
 import (
 	"encoding/json"
 	"fmt"
+	"reflect"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -44,6 +46,39 @@ func (j Date) MarshalJSON() ([]byte, error) {
 func (j Date) String() string {
 	t := time.Time(j)
 	return t.Format(dateLayout)
+}
+
+// ValidateBookField check if a field exists in book struct
+func ValidateBookField(f string) (exists bool) {
+	b := Book{}
+	_, exists = reflect.TypeOf(b).FieldByName(f)
+	return
+}
+
+// ValidateBookValue check if a value can be assigned to the field in book struct
+func ValidateBookValue(f string, v string) (ok bool) {
+	b := Book{}
+	field, _ := reflect.TypeOf(b).FieldByName(f)
+
+	var value reflect.Value
+	switch field.Type {
+	case reflect.TypeOf(uint8(0)):
+		num, err := strconv.ParseUint(v, 10, 8)
+		if err != nil {
+			return false
+		}
+		value = reflect.ValueOf(uint8(num))
+	case reflect.TypeOf(Date{}):
+		t, err := time.Parse(dateLayout, v)
+		if err != nil {
+			return false
+		}
+		value = reflect.ValueOf(Date(t))
+	default:
+		value = reflect.ValueOf(v)
+	}
+
+	return value.Type().AssignableTo(field.Type)
 }
 
 // Collection represents a set of books
