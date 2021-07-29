@@ -8,15 +8,15 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// createCmd creates a new resource
-var createCmd = &cobra.Command{
-	Use:     "create resource",
-	Short:   "create a new resource",
-	Long:    `used to create new resources. Example: book-cli create <TYPE> [OPTIONS] [ -f FILE-PATH | OBJECT]`,
+// updateCmd represents the update command
+var updateCmd = &cobra.Command{
+	Use:     "update resource",
+	Short:   "update a new resource",
+	Long:    `used to update new resources. Example: book-cli update <TYPE> [OPTIONS] [ -f FILE-PATH | OBJECT]`,
 	PreRunE: PreModifierFunction,
 	Args:    cobra.RangeArgs(1, 2),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		opts, err := options.NewModifierOptions(cmd, options.Create, host, args)
+		opts, err := options.NewModifierOptions(cmd, options.Update, host, args)
 
 		if err != nil {
 			return fmt.Errorf("Error: invalid options: %v", err)
@@ -33,7 +33,7 @@ var createCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(createCmd)
+	rootCmd.AddCommand(updateCmd)
 
-	createCmd.Flags().StringP("file", "f", "", "path to JSON resource file")
+	updateCmd.Flags().StringP("file", "f", "", "path to JSON resource file")
 }

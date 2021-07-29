@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"book-management/pkg/apis"
-	"book-management/pkg/book-cli/cmd/pkg/options"
+	"book-management/pkg/book-cli/pkg/options"
 	"bytes"
 	"encoding/json"
 	"fmt"
