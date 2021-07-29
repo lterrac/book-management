@@ -1,0 +1,9 @@
+{
+    "title": "Romeo and Juliet",
+    "author": "William Shakespeare",
+    "isbn": "1234567890987",
+    "published_date": "2000-01-02",
+    "edition": 1,
+    "description": "A love story in Verona",
+    "genre": "Drama"
+}

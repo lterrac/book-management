@@ -9,6 +9,40 @@ import (
 	"time"
 )
 
+const (
+	// BookType represents books
+	BookType ResourceType = "book"
+	// CollectionType represents collections
+	CollectionType ResourceType = "collection"
+	// NotSupported represents a type not currently supported
+	NotSupported ResourceType = "type not supported"
+)
+
+// ResourceType is used to represent the resources managed by the application
+type ResourceType string
+
+// String returns a string representation of the resource type
+func (r ResourceType) String() string {
+	return string(r)
+}
+
+// Plural returns a resource plural
+func (r ResourceType) Plural() string {
+	return fmt.Sprintf("%vs", r)
+}
+
+// GetResource returns the corresponding resource type
+func GetResource(s string) ResourceType {
+	switch s {
+	case BookType.String():
+		return BookType
+	case CollectionType.String():
+		return CollectionType
+	default:
+		return NotSupported
+	}
+}
+
 // Book represents the book object
 type Book struct {
 	Title         string `json:"title"`
