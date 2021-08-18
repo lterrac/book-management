@@ -6,6 +6,9 @@ IMAGE = book-server
 
 all: build coverage clean
 
+server: build 
+	@./book-server
+	
 build: fmt vet test
 	$(BUILD_SETTINGS) go build -trimpath -o "$(IMAGE)" ./main.go
 
